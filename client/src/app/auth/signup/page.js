@@ -1,4 +1,3 @@
-
 "use client";
 
 import Trash from "@/components/icons/Trash";
