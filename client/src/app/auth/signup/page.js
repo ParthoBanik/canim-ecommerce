@@ -1,29 +1,53 @@
+/**
+ * Title: Write a program using JavaScript on Signup
+ * Author: Hasibul Islam
+ * Portfolio: https://devhasibulislam.vercel.app
+ * Linkedin: https://linkedin.com/in/devhasibulislam
+ * GitHub: https://github.com/devhasibulislam
+ * Facebook: https://facebook.com/devhasibulislam
+ * Instagram: https://instagram.com/devhasibulislam
+ * Twitter: https://twitter.com/devhasibulislam
+ * Pinterest: https://pinterest.com/devhasibulislam
+ * WhatsApp: https://wa.me/8801906315901
+ * Telegram: devhasibulislam
+ * Date: 08, November 2023
+ */
+
 "use client";
 
 import Trash from "@/components/icons/Trash";
 import Upload from "@/components/icons/Upload";
 import Spinner from "@/components/shared/Spinner";
-import { useSignupMutation } from "@/services/auth/authApi";
+import { useSignUpMutation } from "@/services/auth/authApi";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 const Signup = () => {
   const router = useRouter();
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatar, setAvatar] = useState(null);
-  const [signup, { isLoading, data, error }] = useSignupMutation();
+  const [signup, { isLoading, data, error }] = useSignUpMutation();
 
   useEffect(() => {
+    if (isLoading) {
+      toast.loading("Signing up...", { id: "signup" });
+    }
+
     if (data) {
-      alert(data?.description);
-      router.push("/auth/signin");
+      toast.success(data?.description, { id: "signup" });
+      
+      // open new tab
+      setTimeout(() => {
+        window.open("/auth/signin", "_self");
+      }, 1000);
     }
     if (error?.data) {
-      alert(error?.data?.description);
+      toast.error(error?.data?.description, { id: "signup" });
     }
-  }, [data, error, router]);
+  }, [isLoading, data, error, router]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -120,7 +144,7 @@ const Signup = () => {
                     alt="avatar"
                     height={100}
                     width={100}
-                    className="rounded h-[100px] w-[100px] object-center"
+                    className="rounded h-[100px] w-[100px] object-cover"
                   />
                   <button
                     className="absolute bottom-0 -right-10 p-1 rounded bg-red-500 text-white shadow-2xl"
@@ -156,7 +180,7 @@ const Signup = () => {
               type="text"
               name="name"
               id="name"
-              placeholder="i.e. Partho Banik"
+              placeholder="i.e. John Doe"
               className=""
               required
             />
@@ -167,7 +191,7 @@ const Signup = () => {
               type="email"
               name="email"
               id="email"
-              placeholder="i.e. partho@gmail.com"
+              placeholder="i.e. example@gmail.com"
               className=""
               required
             />
@@ -178,7 +202,7 @@ const Signup = () => {
               type="password"
               name="password"
               id="password"
-              placeholder="i.e. Partho@123"
+              placeholder="i.e. Admin@123"
               className=""
               required
             />

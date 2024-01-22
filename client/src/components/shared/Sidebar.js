@@ -16,19 +16,159 @@
 "use client";
 
 import React from "react";
-import routes from "./layouts/routes";
 import Down from "../icons/Down";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const user = useSelector((state) => state.auth.user);
+
+  let routes = [];
+
+  if (user?.role === "buyer") {
+    routes = [
+      {
+        name: "My Profile",
+        paths: [
+          {
+            name: "View Profile",
+            path: "/dashboard/buyer/my-profile",
+          },
+          {
+            name: "View Purchases",
+            path: "/dashboard/buyer/my-purchases",
+          },
+        ],
+      },
+      {
+        name: "My Cart",
+        paths: [
+          {
+            name: "View Cart",
+            path: "/dashboard/buyer/my-cart",
+          },
+          {
+            name: "View Wishlist",
+            path: "/dashboard/buyer/my-wishlist",
+          },
+        ],
+      },
+      {
+        name: "My Reviews",
+        paths: [
+          {
+            name: "View Reviews",
+            path: "/dashboard/buyer/my-reviews",
+          },
+        ],
+      },
+    ];
+  }
+
+  if (user?.role === "seller") {
+    routes = [
+      {
+        name: "My Profile",
+        paths: [
+          {
+            name: "View Profile",
+            path: "/dashboard/seller/my-profile",
+          },
+        ],
+      },
+      {
+        name: "My Assets",
+        paths: [
+          {
+            name: "View brand",
+            path: "/dashboard/seller/my-brand",
+          },
+          {
+            name: "View Category",
+            path: "/dashboard/seller/my-category",
+          },
+          {
+            name: "View Store",
+            path: "/dashboard/seller/my-store",
+          },
+        ],
+      },
+      {
+        name: "My Products",
+        paths: [
+          {
+            name: "Add Product",
+            path: "/dashboard/seller/add-product",
+          },
+          {
+            name: "List Products",
+            path: "/dashboard/seller/list-products",
+          },
+        ],
+      },
+    ];
+  }
+
+  if (user?.role === "admin") {
+    routes = [
+      {
+        name: "Retail Landscape",
+        paths: [
+          {
+            name: "List Brands",
+            path: "/dashboard/admin/list-brands",
+          },
+          {
+            name: "List Categories",
+            path: "/dashboard/admin/list-categories",
+          },
+          {
+            name: "List Stores",
+            path: "/dashboard/admin/list-stores",
+          },
+          {
+            name: "List Products",
+            path: "/dashboard/admin/list-products",
+          },
+        ],
+      },
+      {
+        name: "Account Features",
+        paths: [
+          {
+            name: "List Favorites",
+            path: "/dashboard/admin/list-favorites",
+          },
+          {
+            name: "List Cart",
+            path: "/dashboard/admin/list-cart",
+          },
+          {
+            name: "List Purchases",
+            path: "/dashboard/admin/list-purchases",
+          },
+        ],
+      },
+      {
+        name: "Account Manager",
+        paths: [
+          {
+            name: "List Users",
+            path: "/dashboard/admin/list-users",
+          },
+          {
+            name: "Sellers Requests",
+            path: "/dashboard/admin/seller-requests",
+          },
+        ],
+      },
+    ];
+  }
 
   return (
-    <section
-      className="md:col-span-3 col-span-12 overflow-hidden bg-white z-50 relative min-w-full max-w-lg after:content-[''] after:h-full after:w-1 after:absolute after:top-0 after:right-0 after:bg-slate-100 px-2 overflow-y-auto"
-      style={{ resize: "horizontal" }}
-    >
+    <section className="md:col-span-4 col-span-12 overflow-hidden bg-white z-50 min-w-full max-w-lg px-2 overflow-y-auto md:block hidden">
       <div className="w-full h-full flex flex-col gap-y-4">
         {routes.map((route, index) => (
           <div

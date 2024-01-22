@@ -15,13 +15,14 @@
 
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Container from "../shared/Container";
 import Image from "next/image";
 import { AiFillStar } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import { useGetProductsQuery } from "@/services/product/productApi";
 import ExpertCard from "../shared/skeletonLoading/ExpertCard";
+import { toast } from "react-hot-toast";
 
 const ExpertChoice = ({ className }) => {
   const router = useRouter();
@@ -31,11 +32,11 @@ const ExpertChoice = ({ className }) => {
     error: productsError,
     isLoading: productsLoading,
   } = useGetProductsQuery();
-  const products = productsData?.data || [];
+  const products = useMemo(() => productsData?.data || [], [productsData]);
 
   useEffect(() => {
     if (productsError) {
-      alert(productsError?.data?.description);
+      toast.error(productsError?.data?.description, { id: "expert-choice" });
     }
   }, [productsError]);
 
@@ -47,7 +48,7 @@ const ExpertChoice = ({ className }) => {
         </h1>
 
         <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-8">
-          {productsLoading || products?.length === 0 ? (
+          {productsLoading ? (
             <>
               {[1, 2, 3, 4].map((_, index) => (
                 <ExpertCard key={index} />
@@ -58,10 +59,12 @@ const ExpertChoice = ({ className }) => {
               {products?.slice(-8)?.map((product, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-y-4 border p-4 rounded-primary hover:border-black transition-colors cursor-pointer"
+                  className="flex flex-col gap-y-4 border p-4 rounded-lg hover:border-black transition-colors cursor-pointer"
                   onClick={() =>
                     router.push(
-                      `/${product?._id}?product_title=${product.title
+                      `/product?product_id=${
+                        product?._id
+                      }&product_title=${product.title
                         .replace(/ /g, "-")
                         .toLowerCase()}}`
                     )
@@ -76,7 +79,9 @@ const ExpertChoice = ({ className }) => {
                         width={296}
                         height={200}
                         className={`${
-                          product.gallery.length === 2
+                          product.gallery.length === 1
+                            ? "col-span-12 row-span-6"
+                            : product.gallery.length === 2
                             ? "col-span-12 row-span-3"
                             : product.gallery.length === 3
                             ? idx === 0
@@ -91,14 +96,15 @@ const ExpertChoice = ({ className }) => {
                       />
                     ))}
                   </div>
+
                   <article className="flex flex-col gap-y-3.5">
                     <div className="flex flex-row items-center gap-x-1.5">
                       <Badge className="text-indigo-800 bg-indigo-100">
-                        {product?.variations?.colors + " " + "Colors"}
+                        {product?.variations?.colors?.length + " " + "Colors"}
                       </Badge>
                       <div className="h-5 border-l w-[1px]"></div>
                       <Badge className="text-purple-800 bg-purple-100">
-                        {product?.variations?.sizes + " " + "Sizes"}
+                        {product?.variations?.sizes?.length + " " + "Sizes"}
                       </Badge>
                     </div>
                     <div className="flex flex-col gap-y-4">
@@ -112,7 +118,7 @@ const ExpertChoice = ({ className }) => {
                         <span className="flex flex-row items-center gap-x-0.5">
                           <AiFillStar className="text-[#ffc242]" />
                           <span className="text-sm">
-                            {Math.floor(Math.random() * (500 - 100 + 1)) + 100}
+                            {product?.reviews?.length}
                           </span>
                         </span>
                       </div>
@@ -123,6 +129,9 @@ const ExpertChoice = ({ className }) => {
             </>
           )}
         </div>
+        {!productsLoading && products?.length === 0 && (
+          <p className="text-sm">Oops! No products found!</p>
+        )}
       </section>
     </Container>
   );
@@ -132,8 +141,7 @@ function Badge({ props, children, className }) {
   return (
     <span
       className={
-        "px-3 py-1 rounded-primary text-xs w-fit" +
-        (className ? " " + className : "")
+        "px-3 py-1 rounded text-xs w-fit" + (className ? " " + className : "")
       }
       {...props}
     >

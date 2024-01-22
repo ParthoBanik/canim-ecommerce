@@ -1,4 +1,17 @@
-
+/**
+ * Title: Write a program using JavaScript on Page
+ * Author: Hasibul Islam
+ * Portfolio: https://devhasibulislam.vercel.app
+ * Linkedin: https://linkedin.com/in/devhasibulislam
+ * GitHub: https://github.com/devhasibulislam
+ * Facebook: https://facebook.com/devhasibulislam
+ * Instagram: https://instagram.com/devhasibulislam
+ * Twitter: https://twitter.com/devhasibulislam
+ * Pinterest: https://pinterest.com/devhasibulislam
+ * WhatsApp: https://wa.me/8801906315901
+ * Telegram: devhasibulislam
+ * Date: 08, November 2023
+ */
 
 "use client";
 
@@ -8,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -15,14 +29,22 @@ const ResetPassword = () => {
     useForgotPasswordMutation();
 
   useEffect(() => {
+    if (isLoading) {
+      toast.loading("Resetting password...", { id: "forgot-password" });
+    }
+
     if (data) {
-      alert(data?.description);
-      router.push("/auth/signin");
+      toast.success(data?.description, { id: "forgot-password" });
+
+      // open new tab
+      setTimeout(() => {
+        window.open("/auth/signin", "_self");
+      }, 1000);
     }
     if (error?.data) {
-      alert(error?.data?.description);
+      toast.error(error?.data?.description, { id: "forgot-password" });
     }
-  }, [data, error, router]);
+  }, [data, error, router, isLoading]);
 
   const handleResetPassword = (e) => {
     e.preventDefault();
@@ -61,7 +83,7 @@ const ResetPassword = () => {
               type="email"
               name="email"
               id="email"
-              placeholder="i.e. partho@gmail.com"
+              placeholder="i.e. example@gmail.com"
               className=""
               required
             />
@@ -72,7 +94,7 @@ const ResetPassword = () => {
               type="password"
               name="password"
               id="password"
-              placeholder="i.e. Partho@123"
+              placeholder="i.e. Admin@123"
               className=""
               required
             />

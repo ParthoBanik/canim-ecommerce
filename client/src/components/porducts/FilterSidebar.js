@@ -15,20 +15,24 @@
 
 "use client";
 
-import {
-  addProductFilter,
-  clearProductFilter,
-} from "@/features/productFilter/productFilterSlice";
 import { useGetBrandsQuery } from "@/services/brand/brandApi";
 import { useGetCategoriesQuery } from "@/services/category/categoryApi";
 import { useGetStoresQuery } from "@/services/store/storeApi";
 import React, { useEffect } from "react";
 import { AiOutlineReload } from "react-icons/ai";
-import { BiSolidStar } from "react-icons/bi";
-import { useDispatch } from "react-redux";
 import SelectCard from "../shared/skeletonLoading/SelectCard";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearFilter,
+  setBrand,
+  setCategory,
+  setStore,
+} from "@/features/filter/filterSlice";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
-const FilterSidebar = ({ searchParams }) => {
+const FilterSidebar = () => {
   const {
     data: brandsData,
     error: brandsError,
@@ -44,19 +48,33 @@ const FilterSidebar = ({ searchParams }) => {
     error: storesError,
     isLoading: storesLoading,
   } = useGetStoresQuery();
+
   const dispatch = useDispatch();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const filter = useSelector((state) => state.filter);
+
+  const brand = searchParams.get("brand");
+  const category = searchParams.get("category");
+  const store = searchParams.get("store");
 
   const brands = brandsData?.data || [];
   const categories = categoriesData?.data || [];
   const stores = storesData?.data || [];
 
   useEffect(() => {
-    if (brandsError || categoriesError || storesError) {
-      alert(
-        brandsError?.data?.description ||
-          categoriesError?.data?.description ||
-          storesError?.data?.description
-      );
+    if (brandsError?.data) {
+      toast.error(brandsError?.data?.description, { id: "brands-data" });
+    }
+
+    if (categoriesError?.data) {
+      toast.error(categoriesError?.data?.description, {
+        id: "categories-data",
+      });
+    }
+
+    if (storesError?.data) {
+      toast.error(storesError?.data?.description, { id: "stores-data" });
     }
   }, [brandsError, categoriesError, storesError]);
 
@@ -65,12 +83,11 @@ const FilterSidebar = ({ searchParams }) => {
       <section className="flex flex-col gap-y-4 md:sticky md:top-4">
         {/* reset */}
         <div className="flex flex-row items-center justify-between border py-2 px-4 rounded">
-          <h2 className="text-lg">Filters Reset</h2>
+          <h2 className="text-lg">Reset Filter</h2>
           <button
             className="p-1 border rounded-secondary"
             onClick={() => {
-              // Clear the filter
-              dispatch(clearProductFilter());
+              dispatch(clearFilter());
 
               // Uncheck all checkboxes for categories
               categories.forEach((category) => {
@@ -86,6 +103,9 @@ const FilterSidebar = ({ searchParams }) => {
               stores.forEach((store) => {
                 document.getElementById(store._id).checked = false;
               });
+
+              // Use setTimeout to delay the navigation
+              router.push("/products");
             }}
           >
             <AiOutlineReload className="h-5 w-5" />
@@ -105,27 +125,29 @@ const FilterSidebar = ({ searchParams }) => {
             ) : (
               <>
                 {categories.map((category) => (
-                  <label
+                  <Link
                     key={category._id}
-                    htmlFor={category._id}
-                    className="text-sm flex flex-row items-center gap-x-1.5"
+                    href={`/products?category=${category._id}&brand=${brand}&store=${store}`}
                   >
-                    <input
-                      type="checkbox"
-                      name={category._id}
-                      id={category._id}
-                      value={category._id}
-                      className="rounded-secondary checked:bg-primary checked:text-black checked:outline-none checked:ring-0 checked:border-0 focus:outline-none focus:ring-0 focus:border-1"
-                      onChange={() => {
-                        const filterType = "categories";
-                        const selectedItems = categories
-                          .filter((c) => document.getElementById(c._id).checked)
-                          .map((c) => c._id);
-                        dispatch(addProductFilter([filterType, selectedItems]));
-                      }}
-                    />
-                    {category.title} • ({category.products.length})
-                  </label>
+                    <label
+                      htmlFor={category._id}
+                      className="text-sm flex flex-row items-center gap-x-1.5"
+                      onChange={() => dispatch(setCategory(category._id))}
+                    >
+                      <input
+                        type="radio"
+                        name="category"
+                        id={category._id}
+                        value={category._id}
+                        checked={
+                          category._id === filter.category ||
+                          category._id === category
+                        }
+                        className="rounded-secondary checked:bg-primary checked:text-black checked:outline-none checked:ring-0 checked:border-0 focus:outline-none focus:ring-0 focus:border-1 focus:text-black"
+                      />
+                      {category.title}
+                    </label>
+                  </Link>
                 ))}
               </>
             )}
@@ -145,27 +167,26 @@ const FilterSidebar = ({ searchParams }) => {
             ) : (
               <>
                 {brands.map((brand) => (
-                  <label
+                  <Link
                     key={brand._id}
-                    htmlFor={brand._id}
-                    className="text-sm flex flex-row items-center gap-x-1.5"
+                    href={`/products?category=${category}&brand=${brand._id}&store=${store}`}
                   >
-                    <input
-                      type="checkbox"
-                      name={brand._id}
-                      id={brand._id}
-                      value={brand._id}
-                      className="rounded-secondary checked:bg-primary checked:text-black checked:outline-none checked:ring-0 checked:border-0 focus:outline-none focus:ring-0 focus:border-1"
-                      onChange={() => {
-                        const filterType = "brands";
-                        const selectedItems = brands
-                          .filter((b) => document.getElementById(b._id).checked)
-                          .map((b) => b._id);
-                        dispatch(addProductFilter([filterType, selectedItems]));
-                      }}
-                    />
-                    {brand.title} • ({brand.products.length})
-                  </label>
+                    <label
+                      htmlFor={brand._id}
+                      className="text-sm flex flex-row items-center gap-x-1.5"
+                      onChange={() => dispatch(setBrand(brand._id))}
+                    >
+                      <input
+                        type="radio"
+                        name="brand"
+                        id={brand._id}
+                        value={brand._id}
+                        checked={brand._id == filter.brand}
+                        className="rounded-secondary checked:bg-primary checked:text-black checked:outline-none checked:ring-0 checked:border-0 focus:outline-none focus:ring-0 focus:border-1 focus:text-black"
+                      />
+                      {brand.title}
+                    </label>
+                  </Link>
                 ))}
               </>
             )}
@@ -185,27 +206,26 @@ const FilterSidebar = ({ searchParams }) => {
             ) : (
               <>
                 {stores.map((store) => (
-                  <label
+                  <Link
                     key={store._id}
-                    htmlFor={store._id}
-                    className="text-sm flex flex-row items-center gap-x-1.5"
+                    href={`/products?category=${category}&brand=${brand}&store=${store._id}`}
                   >
-                    <input
-                      type="checkbox"
-                      name={store._id}
-                      id={store._id}
-                      value={store._id}
-                      className="rounded-secondary checked:bg-primary checked:text-black checked:outline-none checked:ring-0 checked:border-0 focus:outline-none focus:ring-0 focus:border-1"
-                      onChange={() => {
-                        const filterType = "stores";
-                        const selectedItems = stores
-                          .filter((s) => document.getElementById(s._id).checked)
-                          .map((s) => s._id);
-                        dispatch(addProductFilter([filterType, selectedItems]));
-                      }}
-                    />
-                    {store.title} • ({store.products.length})
-                  </label>
+                    <label
+                      htmlFor={store._id}
+                      className="text-sm flex flex-row items-center gap-x-1.5"
+                      onChange={() => dispatch(setStore(store._id))}
+                    >
+                      <input
+                        type="radio"
+                        name="store"
+                        id={store._id}
+                        value={store._id}
+                        checked={store._id == filter.store}
+                        className="rounded-secondary checked:bg-primary checked:text-black checked:outline-none checked:ring-0 checked:border-0 focus:outline-none focus:ring-0 focus:border-1 focus:text-black"
+                      />
+                      {store.title}
+                    </label>
+                  </Link>
                 ))}
               </>
             )}

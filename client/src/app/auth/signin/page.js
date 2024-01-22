@@ -1,4 +1,17 @@
-
+/**
+ * Title: Write a program using JavaScript on Page
+ * Author: Hasibul Islam
+ * Portfolio: https://devhasibulislam.vercel.app
+ * Linkedin: https://linkedin.com/in/devhasibulislam
+ * GitHub: https://github.com/devhasibulislam
+ * Facebook: https://facebook.com/devhasibulislam
+ * Instagram: https://instagram.com/devhasibulislam
+ * Twitter: https://twitter.com/devhasibulislam
+ * Pinterest: https://pinterest.com/devhasibulislam
+ * WhatsApp: https://wa.me/8801906315901
+ * Telegram: devhasibulislam
+ * Date: 08, November 2023
+ */
 
 "use client";
 
@@ -7,28 +20,31 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import Spinner from "@/components/shared/Spinner";
 import Link from "next/link";
-import { useSigninMutation } from "@/services/auth/authApi";
+import { useSignInMutation } from "@/services/auth/authApi";
+import { toast } from "react-hot-toast";
 
 const Signin = () => {
   const router = useRouter();
-  const [signin, { isLoading, data, error }] = useSigninMutation();
+  const [signin, { isLoading, data, error }] = useSignInMutation();
 
   useEffect(() => {
-    if (localStorage.getItem("accessToken")) {
-      router.push("/");
+    if (isLoading) {
+      toast.loading("Signing in...", { id: "signin" });
     }
-  }, [router]);
 
-  useEffect(() => {
     if (data) {
+      toast.success(data?.description, { id: "signin" });
       localStorage.setItem("accessToken", data?.accessToken);
-      alert(data?.description);
-      window.location.reload();
+
+      // open new tab
+      setTimeout(() => {
+        window.open("/", "_self");
+      }, 1000);
     }
     if (error?.data) {
-      alert(error?.data?.description);
+      toast.error(error?.data?.description, { id: "signin" });
     }
-  }, [data, error]);
+  }, [isLoading, data, error]);
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -63,7 +79,7 @@ const Signin = () => {
               type="email"
               name="email"
               id="email"
-              placeholder="i.e. partho@gmail.com"
+              placeholder="i.e. example@gmail.com"
               className=""
               required
             />
@@ -74,7 +90,7 @@ const Signin = () => {
               type="password"
               name="password"
               id="password"
-              placeholder="i.e. Partho@123"
+              placeholder="i.e. Admin@123"
               className=""
               required
             />

@@ -41,6 +41,11 @@ app.use("/api/category", require("./routes/category.route"));
 app.use("/api/product", require("./routes/product.route"));
 app.use("/api/store", require("./routes/store.route"));
 app.use("/api/user", require("./routes/user.route"));
+app.use("/api/cart", require("./routes/cart.route"));
+app.use("/api/favorite", require("./routes/favorite.route"));
+app.use("/api/review", require("./routes/review.route"));
+app.use("/api/payment", require("./routes/payment.route"));
+app.use("/api/purchase", require("./routes/purchase.route"));
 
 /* global error handler */
 app.use(error);
