@@ -1,17 +1,4 @@
-/**
- * Title: Write a program using JavaScript on Page
- * Author: Hasibul Islam
- * Portfolio: https://devhasibulislam.vercel.app
- * Linkedin: https://linkedin.com/in/devhasibulislam
- * GitHub: https://github.com/devhasibulislam
- * Facebook: https://facebook.com/devhasibulislam
- * Instagram: https://instagram.com/devhasibulislam
- * Twitter: https://twitter.com/devhasibulislam
- * Pinterest: https://pinterest.com/devhasibulislam
- * WhatsApp: https://wa.me/8801906315901
- * Telegram: devhasibulislam
- * Date: 14, January 2024
- */
+
 
 "use client";
 
@@ -196,7 +183,7 @@ const Page = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="bg-red-50 border border-red-900 px-2 rounded-secondary text-red-900 text-xs uppercase">
+                          <span className="bg-blue-50 border border-black-900 px-2 rounded-secondary text-black-900 text-xs uppercase">
                             {status}
                           </span>
                         </td>
