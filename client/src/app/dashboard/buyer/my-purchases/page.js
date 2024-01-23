@@ -196,7 +196,7 @@ const Page = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="whitespace-nowrap scrollbar-hide text-sm">
+                          <span className="bg-red-50 border border-red-900 px-2 rounded-secondary text-red-900 text-xs uppercase">
                             {status}
                           </span>
                         </td>
