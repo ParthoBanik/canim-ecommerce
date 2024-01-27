@@ -62,7 +62,7 @@ Explore curated deals and trending products on our inviting e-commerce homepage.
 ## Clone Repository
 
 ```bash
-git clone https://github.com/devhasibulislam/canim-ecommerce.git
+git clone https://github.com/ParthoBanik/canim-ecommerce.git
 cd canim-ecommerce
 
 cd client
