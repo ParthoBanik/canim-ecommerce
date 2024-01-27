@@ -110,12 +110,12 @@ STRIPE_SECRET_KEY="YOUR_STRIPE_SECRET_KEY"
 
 # Important Links
 
-- [x] `Client Side` Live Link: [Click Here](https://canim-csr.vercel.app/)
-- [x] `Server Side` Live Link: [Click Here](https://canim-ssr.vercel.app/)
+- [x] `Client Side` Live Link: [Click Here](https://ecommerce-csr.vercel.app/)
+- [x] `Server Side` Live Link: [Click Here](https://ecommerce-ssr.vercel.app/)
 - [x] `Dashboard Reference` Link: [Click Here](https://loopinfosol.in/themeforest/ekka-html-v33/ekka-admin/index.html)
 - [x] `Reference Site` Live Link: [Click Here](https://chisnghiax.com/ciseco/)
 
 # Author
 
-Developer: [Hasibul Islam](https://devhasibulislam.vercel.app/)
-Designer: [Sadia Khanum](https://www.facebook.com/devsadiakhan)
+Developer: [Partho](https://dev-parthosite.pantheonsite.io/)
+Designer: [Bonna](https://www.facebook.com/)
